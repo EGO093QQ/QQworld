@@ -10,18 +10,19 @@ function normalizeValue(value) {
 }
 
 export function normalizeCard(card = {}, index = 0) {
-  const sourceValues = card.values || {};
-  const image = card.image || card.bgImage || '';
+  const source = card && typeof card === 'object' ? card : {};
+  const sourceValues = source.values && typeof source.values === 'object' ? source.values : {};
+  const image = source.image || source.bgImage || '';
 
   return {
-    ...card,
-    id: card.id || `card-${index + 1}`,
-    name: String(card.name || '未命名怪獸卡'),
+    ...source,
+    id: source.id || `card-${index + 1}`,
+    name: String(source.name || '未命名怪獸卡'),
     image,
     // bgImage is kept temporarily so existing saves and components remain compatible.
     bgImage: image,
     values: Object.fromEntries(
-      CARD_SIDES.map((side) => [side, normalizeValue(card[side] ?? sourceValues[side])]),
+      CARD_SIDES.map((side) => [side, normalizeValue(source[side] ?? sourceValues[side])]),
     ),
   };
 }

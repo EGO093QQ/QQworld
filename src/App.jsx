@@ -104,7 +104,11 @@ function normalizeWorld(world) {
   return {
     ...DEFAULT_WORLD,
     ...source,
-    opening: { ...DEFAULT_WORLD.opening, ...(source.opening || {}) },
+    opening: {
+      ...DEFAULT_WORLD.opening,
+      ...(source.opening || {}),
+      lines: Array.isArray(source.opening?.lines) ? source.opening.lines : DEFAULT_WORLD.opening.lines,
+    },
     titleScreen: { ...DEFAULT_WORLD.titleScreen, ...(source.titleScreen || {}) },
     settings: { ...DEFAULT_WORLD.settings, ...(source.settings || {}) },
     cards: normalizeCards(source.cards, DEFAULT_WORLD.cards),
@@ -242,7 +246,9 @@ export default function App() {
     };
   }, [screen]);
 
-  useEffect(() => saveJson(WORLD_KEY, world), [world]);
+  useEffect(() => {
+    saveJson(WORLD_KEY, world);
+  }, [world]);
   useEffect(() => {
     if (player) saveJson(APP_KEY, player);
   }, [player]);
@@ -436,7 +442,7 @@ export default function App() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,184,166,.18),rgba(2,6,23,.94))]" />
           {world.opening.music && <audio src={world.opening.music} autoPlay loop controls className="absolute bottom-4 left-4 z-20 max-w-[calc(100%-2rem)] opacity-80" />}
           <div className="opening-staff relative mx-auto max-w-3xl text-center" onAnimationEnd={() => setScreen('title')}>
-            {world.opening.lines.map((line, index) => (
+            {(world.opening.lines || []).map((line, index) => (
               <p key={`${line}-${index}`} className="opening-story-line mb-6 text-xl font-bold leading-relaxed md:text-2xl">{line || '\u00A0'}</p>
             ))}
           </div>
