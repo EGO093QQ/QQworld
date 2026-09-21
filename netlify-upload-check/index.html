@@ -1,0 +1,1258 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07101f" />
+    <title>Triple Realm V3</title>
+    <style>
+      :root {
+        color: #f8fafc;
+        background: #07101f;
+        font-family: Inter, "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 18% 8%, rgba(20, 184, 166, 0.24), transparent 30%),
+          radial-gradient(circle at 82% 12%, rgba(244, 63, 94, 0.18), transparent 32%),
+          linear-gradient(180deg, #07101f 0%, #0f172a 58%, #020617 100%);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
+      }
+
+      .app {
+        width: min(1440px, 100%);
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .kicker {
+        color: #5eead4;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.45em;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 6px;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        font-size: 26px;
+      }
+
+      h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .subtitle {
+        margin-bottom: 0;
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      .actions,
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .button {
+        min-height: 42px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #f8fafc;
+        padding: 10px 14px;
+        font-weight: 900;
+      }
+
+      .button.primary {
+        border-color: #2dd4bf;
+        background: #2dd4bf;
+        color: #042f2e;
+      }
+
+      .button.danger {
+        border-color: rgba(251, 113, 133, 0.45);
+        background: rgba(244, 63, 94, 0.14);
+        color: #fecdd3;
+      }
+
+      .screen {
+        display: grid;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 16px;
+        background: rgba(2, 6, 23, 0.72);
+        padding: 18px;
+        box-shadow: 0 18px 80px rgba(0, 0, 0, 0.24);
+      }
+
+      .setup-grid {
+        display: grid;
+        grid-template-columns: minmax(300px, 0.85fr) minmax(360px, 1.15fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .mode-grid,
+      .deck-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mode-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .option {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.82);
+        color: #f8fafc;
+        padding: 14px;
+        text-align: left;
+      }
+
+      .option.active {
+        border-color: #2dd4bf;
+        background: rgba(20, 184, 166, 0.16);
+      }
+
+      .option-title {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .muted {
+        color: #94a3b8;
+        font-size: 13px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+        color: #cbd5e1;
+        font-size: 14px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 10px;
+        outline: none;
+        background: rgba(0, 0, 0, 0.28);
+        color: #f8fafc;
+        padding: 9px 12px;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #2dd4bf;
+      }
+
+      .deck-summary {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(58px, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .mini-card {
+        min-height: 84px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(20, 184, 166, 0.12));
+        padding: 8px;
+        font-size: 11px;
+      }
+
+      .mini-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 900;
+      }
+
+      .mini-values {
+        margin-top: 8px;
+        color: #cbd5e1;
+      }
+
+      .empty-slot {
+        display: grid;
+        place-items: center;
+        min-height: 84px;
+        border: 1px dashed rgba(148, 163, 184, 0.46);
+        border-radius: 10px;
+        color: #64748b;
+      }
+
+      .builder-grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 360px) 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .library {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        max-height: 66vh;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .library-card {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.82);
+        color: #f8fafc;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .library-card.selected {
+        border-color: #fbbf24;
+        background: rgba(251, 191, 36, 0.12);
+      }
+
+      .builder-slots {
+        display: grid;
+        gap: 10px;
+      }
+
+      .slot-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.72);
+        padding: 10px;
+      }
+
+      .scoreboard {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        width: min(500px, 100%);
+        margin: 0 auto 18px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.38);
+        padding: 12px 20px;
+      }
+
+      .score {
+        text-align: center;
+      }
+
+      .score-label {
+        color: #93c5fd;
+        font-size: 12px;
+      }
+
+      .score:last-child .score-label {
+        color: #fda4af;
+      }
+
+      .score-value {
+        font-size: 40px;
+        font-weight: 900;
+      }
+
+      .turn-label {
+        color: #94a3b8;
+        font-size: 10px;
+        letter-spacing: 0.32em;
+        text-align: center;
+      }
+
+      .turn-value {
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .arena {
+        display: grid;
+        grid-template-columns: 330px minmax(500px, 590px) 330px;
+        justify-content: center;
+        align-items: start;
+        gap: 20px;
+      }
+
+      .hand {
+        min-height: 260px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.25);
+        padding: 14px;
+        opacity: 0.56;
+        transition: 0.2s ease;
+      }
+
+      .hand.active.p1 {
+        border-color: #60a5fa;
+        background: rgba(30, 64, 175, 0.28);
+        opacity: 1;
+      }
+
+      .hand.active.p2 {
+        border-color: #fb7185;
+        background: rgba(159, 18, 57, 0.28);
+        opacity: 1;
+      }
+
+      .hand-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .hand-state {
+        color: #94a3b8;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+      }
+
+      .hand-title {
+        margin-top: 3px;
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .pill {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        color: #cbd5e1;
+        padding: 6px 11px;
+        font-size: 12px;
+      }
+
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        border: 1px solid rgba(94, 234, 212, 0.22);
+        border-radius: 24px;
+        background: rgba(0, 0, 0, 0.52);
+        padding: 12px;
+        box-shadow: 0 0 80px rgba(45, 212, 191, 0.12);
+      }
+
+      .cell {
+        position: relative;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        border: 1px solid rgba(45, 212, 191, 0.28);
+        border-radius: 12px;
+        background: rgba(20, 184, 166, 0.1);
+        transition: 0.18s ease;
+      }
+
+      .cell.filled {
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .cell.hover {
+        border-color: #fbbf24;
+        background: rgba(251, 191, 36, 0.13);
+      }
+
+      .empty-mark {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: rgba(94, 234, 212, 0.28);
+        font-size: 42px;
+      }
+
+      .card-wrap {
+        position: absolute;
+        inset: 4px;
+      }
+
+      .card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        touch-action: none;
+        transform-style: preserve-3d;
+      }
+
+      .card.compact {
+        width: 94px;
+        height: 126px;
+      }
+
+      .card.draggable {
+        cursor: grab;
+      }
+
+      .card.p1 {
+        background: linear-gradient(145deg, #172554, #2563eb, #115e59);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px #60a5fa;
+      }
+
+      .card.p2 {
+        background: linear-gradient(145deg, #500724, #be123c, #7f1d1d);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px #fb7185;
+      }
+
+      .art {
+        position: absolute;
+        inset: 12%;
+        overflow: hidden;
+        border-radius: 10px;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.82));
+      }
+
+      .art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .spark {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        place-items: center;
+        color: rgba(255, 255, 255, 0.52);
+        font-size: 40px;
+      }
+
+      .shade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.86), transparent 58%, rgba(0, 0, 0, 0.2));
+      }
+
+      .edge {
+        position: absolute;
+        z-index: 2;
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.82);
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .top {
+        top: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .right {
+        top: 50%;
+        right: 4px;
+        transform: translateY(-50%);
+      }
+
+      .bottom {
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .left {
+        top: 50%;
+        left: 4px;
+        transform: translateY(-50%);
+      }
+
+      .card-name {
+        position: absolute;
+        z-index: 2;
+        bottom: 9%;
+        left: 50%;
+        width: 74%;
+        transform: translateX(-50%);
+        overflow: hidden;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.72);
+        padding: 2px 4px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .rarity {
+        position: absolute;
+        z-index: 2;
+        top: 4px;
+        right: 4px;
+        font-size: 8px;
+        font-weight: 900;
+      }
+
+      .ghost {
+        position: fixed;
+        z-index: 100;
+        pointer-events: none;
+        opacity: 0.9;
+        transform: translate(-50%, -50%) rotate(2deg) scale(1.05);
+      }
+
+      .modal {
+        position: fixed;
+        z-index: 90;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.82);
+        padding: 16px;
+        backdrop-filter: blur(8px);
+      }
+
+      .dialog {
+        width: min(100%, 450px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        background: #020617;
+        padding: 28px;
+        text-align: center;
+      }
+
+      .dialog-score {
+        margin: 22px 0;
+        font-size: 50px;
+        font-weight: 900;
+      }
+
+      @keyframes drop {
+        from {
+          opacity: 0.15;
+          transform: translateY(-30px) scale(1.08);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes flip {
+        0% {
+          transform: perspective(900px) rotateY(0) scale(1);
+        }
+
+        50% {
+          transform: perspective(900px) rotateY(90deg) scale(1.08);
+        }
+
+        100% {
+          transform: perspective(900px) rotateY(180deg) scale(1);
+        }
+      }
+
+      .drop {
+        animation: drop 0.28s ease-out;
+      }
+
+      .flip {
+        animation: flip 0.52s ease-in-out;
+      }
+
+      @media (max-width: 1120px) {
+        .setup-grid,
+        .builder-grid,
+        .arena {
+          grid-template-columns: 1fr;
+        }
+
+        .board {
+          width: min(590px, 100%);
+          margin: 0 auto;
+          order: -1;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .header {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .mode-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .deck-summary {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .scoreboard {
+          gap: 16px;
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+    <div id="overlay"></div>
+
+    <script>
+      const PLAYER_ONE = 1;
+      const PLAYER_TWO = 2;
+      const CARD_KEY = "triple-realm-v3-cards";
+      const DECK_KEY = "triple-realm-v3-decks";
+      const RARITIES = ["N", "R", "SR", "SSR", "UR"];
+      const DIRECTIONS = [
+        { row: -1, col: 0, mySide: "top", enemySide: "bottom" },
+        { row: 0, col: 1, mySide: "right", enemySide: "left" },
+        { row: 1, col: 0, mySide: "bottom", enemySide: "top" },
+        { row: 0, col: -1, mySide: "left", enemySide: "right" },
+      ];
+
+      const DEFAULT_CARDS = [
+        { id: "c1", name: "炎龍", values: { top: 8, right: 4, bottom: 7, left: 3 }, bgImage: "", rarity: "SSR" },
+        { id: "c2", name: "冰霜巨狼", values: { top: 6, right: 8, bottom: 3, left: 5 }, bgImage: "", rarity: "SR" },
+        { id: "c3", name: "雷霆鳥", values: { top: 7, right: 6, bottom: 4, left: 7 }, bgImage: "", rarity: "SR" },
+        { id: "c4", name: "森林精靈", values: { top: 4, right: 5, bottom: 8, left: 6 }, bgImage: "", rarity: "R" },
+        { id: "c5", name: "黑暗騎士", values: { top: 9, right: 3, bottom: 6, left: 4 }, bgImage: "", rarity: "SSR" },
+        { id: "c6", name: "水晶魔像", values: { top: 5, right: 7, bottom: 7, left: 5 }, bgImage: "", rarity: "SR" },
+        { id: "c7", name: "深海巨獸", values: { top: 3, right: 9, bottom: 5, left: 6 }, bgImage: "", rarity: "R" },
+        { id: "c8", name: "聖光天使", values: { top: 8, right: 7, bottom: 5, left: 8 }, bgImage: "", rarity: "SSR" },
+        { id: "c9", name: "暗影刺客", values: { top: 6, right: 5, bottom: 9, left: 3 }, bgImage: "", rarity: "SR" },
+        { id: "c10", name: "鋼鐵守衛", values: { top: 7, right: 8, bottom: 6, left: 2 }, bgImage: "", rarity: "R" },
+        { id: "c11", name: "星界法師", values: { top: 5, right: 9, bottom: 4, left: 7 }, bgImage: "", rarity: "SR" },
+        { id: "c12", name: "虛空魔龍", values: { top: 9, right: 8, bottom: 8, left: 7 }, bgImage: "", rarity: "UR" },
+      ];
+
+      const app = document.querySelector("#app");
+      const overlay = document.querySelector("#overlay");
+      let cards = loadCards();
+      let decks = loadDecks();
+      let screen = "setup";
+      let mode = "ai";
+      let selectedP1DeckId = decks[0]?.id || "";
+      let selectedP2DeckId = decks[1]?.id || decks[0]?.id || "";
+      let editingDeckId = decks[0]?.id || "";
+      let board = Array(9).fill(null);
+      let player1Hand = [];
+      let player2Hand = [];
+      let currentPlayer = PLAYER_ONE;
+      let gameOver = false;
+      let hoverIndex = null;
+      let dragGhost = null;
+
+      function loadCards() {
+        try {
+          return JSON.parse(localStorage.getItem(CARD_KEY)) || DEFAULT_CARDS;
+        } catch {
+          return DEFAULT_CARDS;
+        }
+      }
+
+      function loadDecks() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(DECK_KEY));
+          if (Array.isArray(saved) && saved.length) return saved;
+        } catch {}
+        return [
+          { id: "deck-starter", name: "起始牌組", cardIds: DEFAULT_CARDS.slice(0, 5).map((card) => card.id) },
+          { id: "deck-rival", name: "對手牌組", cardIds: DEFAULT_CARDS.slice(5, 10).map((card) => card.id) },
+        ];
+      }
+
+      function saveDecks() {
+        localStorage.setItem(DECK_KEY, JSON.stringify(decks));
+      }
+
+      function saveCards() {
+        localStorage.setItem(CARD_KEY, JSON.stringify(cards));
+      }
+
+      function headerHtml() {
+        return `
+          <header class="header">
+            <div>
+              <div class="kicker">TRIPLE REALM V3</div>
+              <h1>三界卡牌對戰</h1>
+              <p class="subtitle">選牌組、建始牌庫、雙人互打，或跟電腦決鬥。</p>
+            </div>
+            <div class="actions">
+              <button class="button" data-action="setup">選擇牌組</button>
+              <button class="button" data-action="builder">牌組建設</button>
+            </div>
+          </header>
+        `;
+      }
+
+      function render() {
+        if (screen === "setup") renderSetup();
+        if (screen === "builder") renderBuilder();
+        if (screen === "game") renderGame();
+      }
+
+      function renderSetup() {
+        app.innerHTML = `
+          ${headerHtml()}
+          <main class="setup-grid">
+            <section class="panel">
+              <h2>對戰設定</h2>
+              <div class="mode-grid">
+                <button class="option ${mode === "ai" ? "active" : ""}" data-mode="ai">
+                  <span class="option-title">跟電腦對決</span>
+                  <span class="muted">玩家 1 操作，玩家 2 由電腦自動出牌。</span>
+                </button>
+                <button class="option ${mode === "human" ? "active" : ""}" data-mode="human">
+                  <span class="option-title">雙人互打</span>
+                  <span class="muted">兩位玩家輪流操作同一台裝置。</span>
+                </button>
+              </div>
+              <div style="height: 16px"></div>
+              <label class="field">玩家 1 牌組
+                <select id="p1Deck">${deckOptions(selectedP1DeckId)}</select>
+              </label>
+              <div style="height: 10px"></div>
+              <label class="field">${mode === "ai" ? "電腦牌組" : "玩家 2 牌組"}
+                <select id="p2Deck">${deckOptions(selectedP2DeckId)}</select>
+              </label>
+              <div style="height: 16px"></div>
+              <div class="button-row">
+                <button class="button primary" id="duel" ${canDuel() ? "" : "disabled"}>決鬥</button>
+                <button class="button" data-action="builder">建立或修改牌組</button>
+              </div>
+              <p class="muted" style="margin-top: 12px">${canDuel() ? "選好牌組後即可開始。" : "每個牌組必須剛好 5 張牌，才能開始決鬥。"}</p>
+            </section>
+            <section class="panel">
+              <h2>目前選擇</h2>
+              <div class="deck-grid">
+                ${selectedDeckPreview("玩家 1", selectedP1DeckId)}
+                ${selectedDeckPreview(mode === "ai" ? "電腦" : "玩家 2", selectedP2DeckId)}
+              </div>
+            </section>
+          </main>
+        `;
+        bindCommonActions();
+        document.querySelectorAll("[data-mode]").forEach((button) => {
+          button.addEventListener("click", () => {
+            mode = button.dataset.mode;
+            render();
+          });
+        });
+        document.querySelector("#p1Deck").addEventListener("change", (event) => {
+          selectedP1DeckId = event.target.value;
+          render();
+        });
+        document.querySelector("#p2Deck").addEventListener("change", (event) => {
+          selectedP2DeckId = event.target.value;
+          render();
+        });
+        document.querySelector("#duel")?.addEventListener("click", startDuel);
+      }
+
+      function renderBuilder() {
+        const deck = getEditingDeck();
+        app.innerHTML = `
+          ${headerHtml()}
+          <main class="builder-grid">
+            <section class="panel">
+              <h2>牌組建設</h2>
+              <label class="field">選擇牌組
+                <select id="editingDeck">${deckOptions(editingDeckId)}</select>
+              </label>
+              <div style="height: 10px"></div>
+              <label class="field">牌組名稱
+                <input id="deckName" value="${escapeAttr(deck.name)}" />
+              </label>
+              <div style="height: 14px"></div>
+              <h3>牌組內容 ${deck.cardIds.length}／5</h3>
+              <div class="builder-slots">
+                ${[0, 1, 2, 3, 4].map((index) => deckSlotHtml(deck, index)).join("")}
+              </div>
+              <div style="height: 14px"></div>
+              <div class="button-row">
+                <button class="button primary" id="saveDeck">儲存牌組</button>
+                <button class="button" id="newDeck">新增牌組</button>
+                <button class="button danger" id="deleteDeck" ${decks.length <= 1 ? "disabled" : ""}>刪除牌組</button>
+              </div>
+              <p class="muted" style="margin-top: 12px">從右側牌庫點選卡片即可加入牌組；一個牌組固定 5 張牌。</p>
+            </section>
+            <section class="panel">
+              <h2>牌庫</h2>
+              <div class="library">
+                ${cards.map((card) => libraryCardHtml(card, deck.cardIds.includes(card.id))).join("")}
+              </div>
+            </section>
+          </main>
+        `;
+        bindCommonActions();
+        document.querySelector("#editingDeck").addEventListener("change", (event) => {
+          editingDeckId = event.target.value;
+          render();
+        });
+        document.querySelector("#deckName").addEventListener("input", (event) => {
+          deck.name = event.target.value;
+          saveDecks();
+        });
+        document.querySelector("#saveDeck").addEventListener("click", () => {
+          deck.name = document.querySelector("#deckName").value.trim() || "未命名牌組";
+          saveDecks();
+          syncSelectedDecks();
+          renderSetup();
+        });
+        document.querySelector("#newDeck").addEventListener("click", () => {
+          const next = { id: `deck-${Date.now()}`, name: `新牌組 ${decks.length + 1}`, cardIds: [] };
+          decks.push(next);
+          editingDeckId = next.id;
+          saveDecks();
+          render();
+        });
+        document.querySelector("#deleteDeck").addEventListener("click", () => {
+          if (decks.length <= 1) return;
+          decks = decks.filter((item) => item.id !== editingDeckId);
+          editingDeckId = decks[0].id;
+          syncSelectedDecks();
+          saveDecks();
+          render();
+        });
+        document.querySelectorAll("[data-add-card]").forEach((button) => {
+          button.addEventListener("click", () => {
+            toggleDeckCard(deck, button.dataset.addCard);
+            saveDecks();
+            render();
+          });
+        });
+        document.querySelectorAll("[data-remove-card]").forEach((button) => {
+          button.addEventListener("click", () => {
+            deck.cardIds = deck.cardIds.filter((id, index) => String(index) !== button.dataset.removeCard);
+            saveDecks();
+            render();
+          });
+        });
+      }
+
+      function renderGame() {
+        const score = getScore();
+        app.innerHTML = `
+          ${headerHtml()}
+          <section class="scoreboard" aria-label="比分">
+            <div class="score"><div class="score-label">玩家 1</div><div class="score-value">${score.player1}</div></div>
+            <div><div class="turn-label">回合</div><div class="turn-value">${currentPlayer === PLAYER_ONE ? "玩家 1" : mode === "ai" ? "電腦" : "玩家 2"}</div></div>
+            <div class="score"><div class="score-label">${mode === "ai" ? "電腦" : "玩家 2"}</div><div class="score-value">${score.player2}</div></div>
+          </section>
+          <main class="arena">
+            <section class="hand p1 ${currentPlayer === PLAYER_ONE ? "active" : ""}" id="hand1"></section>
+            <section class="board" id="board"></section>
+            <section class="hand p2 ${currentPlayer === PLAYER_TWO ? "active" : ""}" id="hand2"></section>
+          </main>
+        `;
+        bindCommonActions();
+        renderHand(document.querySelector("#hand1"), PLAYER_ONE, "玩家 1", player1Hand);
+        renderHand(document.querySelector("#hand2"), PLAYER_TWO, mode === "ai" ? "電腦" : "玩家 2", player2Hand);
+        renderBoard();
+        if (!gameOver && mode === "ai" && currentPlayer === PLAYER_TWO) {
+          window.setTimeout(playComputerTurn, 650);
+        }
+      }
+
+      function bindCommonActions() {
+        document.querySelectorAll("[data-action='setup']").forEach((button) => {
+          button.addEventListener("click", () => {
+            screen = "setup";
+            overlay.innerHTML = "";
+            render();
+          });
+        });
+        document.querySelectorAll("[data-action='builder']").forEach((button) => {
+          button.addEventListener("click", () => {
+            screen = "builder";
+            overlay.innerHTML = "";
+            render();
+          });
+        });
+      }
+
+      function deckOptions(selectedId) {
+        return decks.map((deck) => `<option value="${escapeAttr(deck.id)}" ${deck.id === selectedId ? "selected" : ""}>${escapeHtml(deck.name)}（${deck.cardIds.length} 張）</option>`).join("");
+      }
+
+      function selectedDeckPreview(label, deckId) {
+        const deck = decks.find((item) => item.id === deckId) || decks[0];
+        return `
+          <div class="panel" style="box-shadow: none">
+            <div class="kicker">${label}</div>
+            <h3>${escapeHtml(deck.name)}</h3>
+            <div class="deck-summary">${[0, 1, 2, 3, 4].map((index) => miniCardHtml(cardById(deck.cardIds[index]))).join("")}</div>
+          </div>
+        `;
+      }
+
+      function miniCardHtml(card) {
+        if (!card) return `<div class="empty-slot">空</div>`;
+        return `
+          <div class="mini-card">
+            <div class="mini-name">${escapeHtml(card.name)}</div>
+            <div class="muted">${escapeHtml(card.rarity)}</div>
+            <div class="mini-values">${card.values.top}/${card.values.right}/${card.values.bottom}/${card.values.left}</div>
+          </div>
+        `;
+      }
+
+      function deckSlotHtml(deck, index) {
+        const card = cardById(deck.cardIds[index]);
+        if (!card) return `<div class="empty-slot">第 ${index + 1} 張空位</div>`;
+        return `
+          <div class="slot-row">
+            <div>
+              <strong>${escapeHtml(card.name)}</strong>
+              <div class="muted">${card.rarity} · ${card.values.top}/${card.values.right}/${card.values.bottom}/${card.values.left}</div>
+            </div>
+            <button class="button danger" data-remove-card="${index}">移除</button>
+          </div>
+        `;
+      }
+
+      function libraryCardHtml(card, selected) {
+        return `
+          <button class="library-card ${selected ? "selected" : ""}" data-add-card="${escapeAttr(card.id)}">
+            <strong>${escapeHtml(card.name)}</strong>
+            <div class="muted">${escapeHtml(card.rarity)}</div>
+            <div style="margin-top: 8px">${card.values.top}/${card.values.right}/${card.values.bottom}/${card.values.left}</div>
+            <div class="muted" style="margin-top: 8px">${selected ? "已在牌組中" : "加入牌組"}</div>
+          </button>
+        `;
+      }
+
+      function getEditingDeck() {
+        return decks.find((deck) => deck.id === editingDeckId) || decks[0];
+      }
+
+      function cardById(id) {
+        return cards.find((card) => card.id === id) || null;
+      }
+
+      function toggleDeckCard(deck, cardId) {
+        if (deck.cardIds.includes(cardId)) {
+          deck.cardIds = deck.cardIds.filter((id) => id !== cardId);
+          return;
+        }
+        if (deck.cardIds.length >= 5) return;
+        deck.cardIds.push(cardId);
+      }
+
+      function canDuel() {
+        const p1 = decks.find((deck) => deck.id === selectedP1DeckId);
+        const p2 = decks.find((deck) => deck.id === selectedP2DeckId);
+        return p1?.cardIds.length === 5 && p2?.cardIds.length === 5;
+      }
+
+      function syncSelectedDecks() {
+        if (!decks.some((deck) => deck.id === selectedP1DeckId)) selectedP1DeckId = decks[0].id;
+        if (!decks.some((deck) => deck.id === selectedP2DeckId)) selectedP2DeckId = decks[0].id;
+      }
+
+      function startDuel() {
+        if (!canDuel()) return;
+        const p1Deck = decks.find((deck) => deck.id === selectedP1DeckId);
+        const p2Deck = decks.find((deck) => deck.id === selectedP2DeckId);
+        player1Hand = p1Deck.cardIds.map((id, index) => withHandId(cardById(id), "p1", index)).filter(Boolean);
+        player2Hand = p2Deck.cardIds.map((id, index) => withHandId(cardById(id), "p2", index)).filter(Boolean);
+        board = Array(9).fill(null);
+        currentPlayer = PLAYER_ONE;
+        gameOver = false;
+        hoverIndex = null;
+        overlay.innerHTML = "";
+        screen = "game";
+        render();
+      }
+
+      function withHandId(card, prefix, index) {
+        return { ...card, _handId: `${prefix}-${index}-${Date.now()}-${Math.random()}` };
+      }
+
+      function getScore() {
+        return board.reduce((score, slot) => {
+          if (slot?.owner === PLAYER_ONE) score.player1 += 1;
+          if (slot?.owner === PLAYER_TWO) score.player2 += 1;
+          return score;
+        }, { player1: 0, player2: 0 });
+      }
+
+      function renderHand(element, player, title, hand) {
+        const active = player === currentPlayer;
+        element.innerHTML = `
+          <div class="hand-head">
+            <div><div class="hand-state">${active ? "目前回合" : "等待中"}</div><div class="hand-title">${title}</div></div>
+            <div class="pill">${hand.length} 張</div>
+          </div>
+          <div class="cards"></div>
+        `;
+        const list = element.querySelector(".cards");
+        for (const card of hand) {
+          const holder = document.createElement("div");
+          holder.innerHTML = cardHtml(card, player, true, "", active && !(mode === "ai" && player === PLAYER_TWO)).trim();
+          const cardElement = holder.firstElementChild;
+          if (active && !(mode === "ai" && player === PLAYER_TWO)) {
+            cardElement.addEventListener("pointerdown", (event) => beginDrag(event, card, player));
+          }
+          list.appendChild(cardElement);
+        }
+      }
+
+      function renderBoard() {
+        const boardElement = document.querySelector("#board");
+        boardElement.innerHTML = "";
+        board.forEach((slot, index) => {
+          const cell = document.createElement("div");
+          cell.className = `cell ${slot ? "filled" : ""} ${hoverIndex === index ? "hover" : ""}`;
+          cell.dataset.cellIndex = index;
+          cell.innerHTML = slot ? `<div class="card-wrap">${cardHtml(slot.card, slot.owner, false, slot.animation)}</div>` : `<div class="empty-mark">+</div>`;
+          boardElement.appendChild(cell);
+        });
+      }
+
+      function cardHtml(card, owner, compact = false, animation = "", draggable = false) {
+        return `
+          <div class="card p${owner} ${compact ? "compact" : ""} ${animation} ${draggable ? "draggable" : ""}">
+            <div class="art">${card.bgImage ? `<img src="${escapeAttr(card.bgImage)}" alt="${escapeAttr(card.name)}">` : `<div class="spark">✦</div>`}<div class="shade"></div></div>
+            <div class="edge top">${card.values.top}</div>
+            <div class="edge right">${card.values.right}</div>
+            <div class="edge bottom">${card.values.bottom}</div>
+            <div class="edge left">${card.values.left}</div>
+            <div class="card-name">${escapeHtml(card.name)}</div>
+            <div class="rarity">${escapeHtml(card.rarity)}</div>
+          </div>
+        `;
+      }
+
+      function beginDrag(event, card, owner) {
+        if (owner !== currentPlayer || gameOver) return;
+        event.preventDefault();
+        dragGhost = document.createElement("div");
+        dragGhost.className = "ghost";
+        dragGhost.innerHTML = cardHtml(card, owner, true);
+        document.body.appendChild(dragGhost);
+        moveGhost(event.clientX, event.clientY);
+
+        const onMove = (moveEvent) => {
+          moveGhost(moveEvent.clientX, moveEvent.clientY);
+          updateHover(moveEvent.clientX, moveEvent.clientY);
+        };
+
+        const onUp = (upEvent) => {
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+          const index = getCellIndex(upEvent.clientX, upEvent.clientY);
+          if (index !== null && !board[index]) placeCard(index, card, owner);
+          dragGhost?.remove();
+          dragGhost = null;
+          hoverIndex = null;
+          if (!gameOver) render();
+        };
+
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp, { once: true });
+      }
+
+      function moveGhost(x, y) {
+        if (!dragGhost) return;
+        dragGhost.style.left = `${x}px`;
+        dragGhost.style.top = `${y}px`;
+      }
+
+      function updateHover(x, y) {
+        const index = getCellIndex(x, y);
+        hoverIndex = index !== null && !board[index] ? index : null;
+        renderBoard();
+      }
+
+      function getCellIndex(x, y) {
+        const element = document.elementFromPoint(x, y);
+        const cell = element?.closest?.("[data-cell-index]");
+        return cell ? Number(cell.dataset.cellIndex) : null;
+      }
+
+      function placeCard(index, card, owner) {
+        if (owner !== currentPlayer || board[index] || gameOver) return false;
+        board = board.map((slot) => slot ? { ...slot, animation: "" } : slot);
+        board[index] = { card, owner, animation: "drop" };
+        applyBasicFlips(index, owner);
+        if (owner === PLAYER_ONE) player1Hand = player1Hand.filter((item) => item._handId !== card._handId);
+        if (owner === PLAYER_TWO) player2Hand = player2Hand.filter((item) => item._handId !== card._handId);
+        if (board.filter(Boolean).length === 9) {
+          gameOver = true;
+          render();
+          showGameOver();
+        } else {
+          currentPlayer = owner === PLAYER_ONE ? PLAYER_TWO : PLAYER_ONE;
+        }
+        return true;
+      }
+
+      function applyBasicFlips(placedIndex, owner) {
+        const row = Math.floor(placedIndex / 3);
+        const col = placedIndex % 3;
+        const placed = board[placedIndex];
+        for (const direction of DIRECTIONS) {
+          const targetRow = row + direction.row;
+          const targetCol = col + direction.col;
+          if (targetRow < 0 || targetRow > 2 || targetCol < 0 || targetCol > 2) continue;
+          const targetIndex = targetRow * 3 + targetCol;
+          const target = board[targetIndex];
+          if (!target || target.owner === owner) continue;
+          if (placed.card.values[direction.mySide] > target.card.values[direction.enemySide]) {
+            board[targetIndex] = { ...target, owner, animation: "flip" };
+          }
+        }
+      }
+
+      function playComputerTurn() {
+        if (screen !== "game" || gameOver || currentPlayer !== PLAYER_TWO) return;
+        const emptyIndexes = board.map((slot, index) => slot ? null : index).filter((index) => index !== null);
+        if (!emptyIndexes.length || !player2Hand.length) return;
+        let best = null;
+        for (const card of player2Hand) {
+          for (const index of emptyIndexes) {
+            const flips = countPotentialFlips(index, card, PLAYER_TWO);
+            const strength = card.values.top + card.values.right + card.values.bottom + card.values.left;
+            const score = flips * 100 + strength + Math.random();
+            if (!best || score > best.score) best = { card, index, score };
+          }
+        }
+        if (best) {
+          placeCard(best.index, best.card, PLAYER_TWO);
+          if (!gameOver) render();
+        }
+      }
+
+      function countPotentialFlips(index, card, owner) {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        let flips = 0;
+        for (const direction of DIRECTIONS) {
+          const targetRow = row + direction.row;
+          const targetCol = col + direction.col;
+          if (targetRow < 0 || targetRow > 2 || targetCol < 0 || targetCol > 2) continue;
+          const target = board[targetRow * 3 + targetCol];
+          if (!target || target.owner === owner) continue;
+          if (card.values[direction.mySide] > target.card.values[direction.enemySide]) flips += 1;
+        }
+        return flips;
+      }
+
+      function showGameOver() {
+        const score = getScore();
+        const result = score.player1 > score.player2 ? "玩家 1 勝利" : score.player2 > score.player1 ? `${mode === "ai" ? "電腦" : "玩家 2"} 勝利` : "平手";
+        overlay.innerHTML = `
+          <div class="modal">
+            <div class="dialog">
+              <div class="kicker">對戰結束</div>
+              <h2>${result}</h2>
+              <div class="dialog-score">${score.player1} <span class="muted">:</span> ${score.player2}</div>
+              <div class="button-row" style="justify-content: center">
+                <button class="button primary" id="again">再戰一局</button>
+                <button class="button" id="backSetup">回到選牌組</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.querySelector("#again").addEventListener("click", startDuel);
+        document.querySelector("#backSetup").addEventListener("click", () => {
+          overlay.innerHTML = "";
+          screen = "setup";
+          render();
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          "\"": "&quot;",
+          "'": "&#39;",
+        })[char]);
+      }
+
+      function escapeAttr(value) {
+        return escapeHtml(value);
+      }
+
+      saveCards();
+      saveDecks();
+      render();
+    </script>
+  </body>
+</html>

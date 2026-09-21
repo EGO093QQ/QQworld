@@ -1,0 +1,92 @@
+export const RARITIES = ['N', 'R', 'SR', 'UR', 'LR'];
+
+export const RARITY_STYLES = {
+  N: { color: '#FFFFFF' },
+  R: { color: '#00F5D4' },
+  SR: { color: '#00B4D8' },
+  UR: { gradient: 'linear-gradient(180deg, #B517FF 0%, #7209B7 100%)' },
+  LR: { gradient: 'linear-gradient(180deg, #FB8500 0%, #E63946 100%)' },
+};
+
+export const DEFAULT_CARDS = [
+  {
+    id: 'sprout-hopper',
+    name: '芽躍獸',
+    values: { top: 3, right: 5, bottom: 2, left: 4 },
+    rarity: 'N',
+    description: '喜歡在草地裡跳來跳去的新手夥伴，擅長用速度擾亂對手。',
+    bgImage: '',
+  },
+  {
+    id: 'stone-pup',
+    name: '石甲犬',
+    values: { top: 5, right: 2, bottom: 6, left: 3 },
+    rarity: 'N',
+    description: '外表憨厚，守備穩定，是許多訓練師第一副牌組裡的可靠夥伴。',
+    bgImage: '',
+  },
+  {
+    id: 'mist-fin',
+    name: '霧鰭魚',
+    values: { top: 4, right: 6, bottom: 3, left: 5 },
+    rarity: 'N',
+    description: '能在薄霧中滑行，常用柔和的水氣保護同伴。',
+    bgImage: '',
+  },
+  {
+    id: 'ember-cat',
+    name: '燈焰貓',
+    values: { top: 6, right: 7, bottom: 3, left: 4 },
+    rarity: 'R',
+    description: '尾巴像小燈籠一樣發光，越接近勝負關鍵越有精神。',
+    bgImage: '',
+  },
+  {
+    id: 'leaf-guard',
+    name: '葉盾衛',
+    values: { top: 7, right: 4, bottom: 7, left: 3 },
+    rarity: 'R',
+    description: '用厚葉形成盾牌，適合放在棋盤中央穩住局面。',
+    bgImage: '',
+  },
+  {
+    id: 'spark-mouse',
+    name: '星電鼠',
+    values: { top: 5, right: 8, bottom: 4, left: 6 },
+    rarity: 'R',
+    description: '小小身體能聚集明亮電光，右側攻勢特別突出。',
+    bgImage: '',
+  },
+  {
+    id: 'moon-mantis',
+    name: '月刃螳',
+    values: { top: 8, right: 5, bottom: 7, left: 6 },
+    rarity: 'SR',
+    description: '在月光下揮舞雙刃，攻守均衡，適合反擊。',
+    bgImage: '',
+  },
+  {
+    id: 'cloud-deer',
+    name: '雲角鹿',
+    values: { top: 7, right: 8, bottom: 5, left: 7 },
+    rarity: 'SR',
+    description: '奔跑時會留下雲霧軌跡，是冒險途中少見的溫柔強者。',
+    bgImage: '',
+  },
+  {
+    id: 'sun-lion',
+    name: '日冕獅',
+    values: { top: 9, right: 7, bottom: 8, left: 5 },
+    rarity: 'UR',
+    description: '鬃毛閃耀如晨光，常在逆風時打開突破口。',
+    bgImage: '',
+  },
+  {
+    id: 'star-dragon',
+    name: '星穹龍',
+    values: { top: '★', right: 8, bottom: 9, left: 7 },
+    rarity: 'LR',
+    description: '傳說中守護星空道路的龍，擁有超越 9 的頂點力量。',
+    bgImage: '',
+  },
+];
