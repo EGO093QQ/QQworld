@@ -10,7 +10,7 @@ export function MainMenu({ player, world, onNavigate }) {
   ];
 
   return (
-    <main className="main-hub min-h-screen overflow-hidden text-white" style={{ backgroundImage: "url('/assets/main-menu-background.png')" }}>
+    <main className="main-hub min-h-screen overflow-hidden text-white" style={{ backgroundImage: "url('/assets/main-menu-background-qqworld.png')" }}>
       <div className="hub-topbar">
         <div className="hub-player hub-player-text">
           <div>
